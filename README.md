@@ -1,0 +1,2 @@
+# SpeakEazy
+SpeakEazy is a mobile chat app built using React Native. This app provides users with a chat interface and presents users with options to share information, such as an image or their location. 
