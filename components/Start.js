@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { ImageBackground, StyleSheet, View, Text, Button, TextInput, TouchableOpacity } from 'react-native';
+import { ImageBackground, StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 
 const Start = ({ navigation }) => {
   const [name, setName] = useState('');
+  const [selectedColor, setSelectedColor] = useState('#757083');
   const colors = ['#090C08', '#474056', '#8A95A5', '#B9C6AE'];
 
   return (
@@ -14,26 +15,35 @@ const Start = ({ navigation }) => {
       >
         <Text style={styles.appTitle}>SpeakEazy</Text>
         <View style={styles.box}>
+          <View style={styles.inputContainer}>
+            <Image source={require('../assets/icon.svg')} style={styles.icon} />
+            <TextInput
+              style={styles.textInput}
+              value={name}
+              onChangeText={setName}
+              placeholder='Your Name'
+              placeholderTextColor="#757083"
+            />
+          </View>
 
-        
-          <TextInput
-            style={styles.textInput}
-            value={name}
-            onChangeText={setName}
-            placeholder='Your Name'
-            placeholderTextColor="#757083"
-          />
-          
           <Text style={styles.chooseColor}>Choose background color:</Text>
 
           <View style={styles.colorOptions}>
             {colors.map(color => (
-              <TouchableOpacity key={color} style={[styles.colorBox, { backgroundColor: color }]} />
+              <TouchableOpacity
+                key={color}
+                style={[
+                  styles.colorBox,
+                  { backgroundColor: color },
+                  selectedColor === color && styles.selectedColorBox
+                ]}
+                onPress={() => setSelectedColor(color)}
+              />
             ))}
           </View>
 
           <TouchableOpacity
-            style={styles.startChatting}
+            style={[styles.startChatting, { backgroundColor: selectedColor }]}
             onPress={() => navigation.navigate('Chat', { name: name })}
           >
             <Text style={styles.startChattingText}>Start Chatting</Text>
@@ -52,11 +62,9 @@ const styles = StyleSheet.create({
   },
   imageBackground: {
     flex: 1,
-    // justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
     width: '100%',
-    // padding: 20,
   },
   appTitle: {
     fontSize: 45,
@@ -73,19 +81,30 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'space-around', 
   },
-  textInput: {
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     width: '88%',
-    padding: 15,
     borderWidth: 1,
     borderColor: '#757083',
+    backgroundColor: '#FFFFFF',
+    padding: 15,
+  },
+  icon: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+  textInput: {
+    flex: 1,
     backgroundColor: '#FFFFFF',
   },
   chooseColor: {
     fontSize: 16,
-    fontWeight: '300',
+    fontWeight: '600',
     color: '#757083',
-    opacity: 1,
-    fontWeight: '600'
+    textAlign: 'left',
+    width: '88%',
   },
   colorOptions: {
     flexDirection: 'row',
@@ -95,10 +114,14 @@ const styles = StyleSheet.create({
   colorBox: {
     width: 60,
     height: 60,
-    borderRadius: 90,
+    borderRadius: 30,
+    padding: '20px',
+  },
+  selectedColorBox: {
+    borderWidth: 2,
+    borderColor: '#000000',
   },
   startChatting: {
-    backgroundColor: '#757083',
     borderRadius: 5,
     padding: 10,
     width: '88%',
