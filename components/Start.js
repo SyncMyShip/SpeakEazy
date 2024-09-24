@@ -16,7 +16,9 @@ const Start = ({ navigation }) => {
         <Text style={styles.appTitle}>SpeakEazy</Text>
         <View style={styles.box}>
           <View style={styles.inputContainer}>
-            <Image source={require('../assets/icon.svg')} style={styles.icon} />
+
+            <Image source={require('../assets/icon.png')} style={styles.icon} />
+
             <TextInput
               style={styles.textInput}
               value={name}
@@ -43,8 +45,8 @@ const Start = ({ navigation }) => {
           </View>
 
           <TouchableOpacity
-            style={[styles.startChatting, { backgroundColor: selectedColor }]}
-            onPress={() => navigation.navigate('Chat', { name: name })}
+            style={[styles.startChatting, { backgroundColor: '#757083' }]}
+            onPress={() => navigation.navigate('Chat', { name: name, backgroundColor: selectedColor })}
           >
             <Text style={styles.startChattingText}>Start Chatting</Text>
           </TouchableOpacity>
