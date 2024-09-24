@@ -34,6 +34,9 @@ const Start = ({ navigation }) => {
             {colors.map(color => (
               <TouchableOpacity
                 key={color}
+                accessible={true}
+                accessibilityLabel="Select background color"
+                accessibilityHint="Choose a background color for your chat from the provided list"
                 style={[
                   styles.colorBox,
                   { backgroundColor: color },
@@ -46,6 +49,9 @@ const Start = ({ navigation }) => {
 
           <TouchableOpacity
             style={[styles.startChatting, { backgroundColor: '#757083' }]}
+            accessible={true}
+            accessibilityLabel="Start Chatting"
+            accessibilityHint="Confirm background color choice and enter chat."
             onPress={() => navigation.navigate('Chat', { name: name, backgroundColor: selectedColor })}
           >
             <Text style={styles.startChattingText}>Start Chatting</Text>
