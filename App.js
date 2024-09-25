@@ -8,12 +8,30 @@ import Chat from './components/Chat';
 
 const Stack = createNativeStackNavigator();
 
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(["AsyncStorage has been extracted from"]); 
+LogBox.ignoreLogs(["@firebase/auth: Auth (10.3.1):"]);
+
 const App = () => {
   const [text, setText] = useState('');
 
-  const alertMyText = () => {
-    Alert.alert(text);
-  }
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAY_3sr9EXcJ8t_7-5VcPyGEAHRkbTwyE",
+    authDomain: "speakeazy-d4aa2.firebaseapp.com",
+    projectId: "speakeazy-d4aa2",
+    storageBucket: "speakeazy-d4aa2.appspot.com",
+    messagingSenderId: "609979425080",
+    appId: "1:609979425080:web:36a70e2124604f7b1221cd"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+
+  // Initialize Cloud Firestore and get a reference to the service
+  const db = getFirestore(app);
 
   return (
     <NavigationContainer>
@@ -26,8 +44,9 @@ const App = () => {
         />
         <Stack.Screen
           name="Chat"
-          component={Chat}
-        />
+        >
+          {props => <Chat db={db} {...props} />}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

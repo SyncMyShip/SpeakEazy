@@ -1,36 +1,37 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Platform, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Platform, KeyboardAvoidingView, FlatList } from 'react-native';
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
+import { collection, query, addDoc, onSnapshot, where, orderBy } from "firebase/firestore";
 
-const Chat = ({ route, navigation }) => {
-  const { name, backgroundColor } = route.params;
+const Chat = ({ route, navigation, db }) => {
+  const { name, backgroundColor, userID } = route.params;
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     navigation.setOptions({ title: name });
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hey friend!',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://media.istockphoto.com/id/1173828830/vector/green-alien-climbs-out-from-the-hole-of-space-with-stars-extraterrestrial-in-flat-cartoon.jpg?s=612x612&w=0&k=20&c=AymzvIizcfH7toqxjQN9F0THwYsuEMvOBBJn06VYoxY=',
-        },
-      },
-      {
-        _id: 2,
-        text: 'New Message',
-        createdAt: new Date(),
-        system: true,
-      },
-    ]);
+
+    // define query that grabs "messages" collection from Firestore
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+
+    // Function called when changes are made to the "messages collection"
+    const unsubMsgs = onSnapshot(q, (docs) => {
+      let newMessages = [];
+
+      // iterates through each document
+      docs.forEach(doc => {
+        newMessages.push({ id: doc.id, ...doc.data(), createdAt: new Date(doc.data().createdAt.toMillis()), })
+      });
+      setMessages(newMessages);
+    });
+
+    // Clean up code
+    return () => {
+      if (unsubMsgs) unsubMsgs();
+    }
   }, []);
 
-  const onSend = (newMessages) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages))
-  }
+  const onSend = (newMessages) => {addDoc(collection(db, "messages"), newMessages[0])}
+
 
   const renderBubble = (props) => {
     return <Bubble
@@ -54,11 +55,11 @@ const Chat = ({ route, navigation }) => {
         renderBubble={renderBubble}
         onSend={messages => onSend(messages)}
         user={{
-          _id: 1,
-          name
+          _id: userID,
+          name: name
         }}
       />
-      { Platform.OS === ('android' || 'ios') ? <KeyboardAvoidingView behavior="height" /> : null }
+      { Platform.OS === ('android') || Platform.OS === ('ios') ? <KeyboardAvoidingView behavior="height" /> : null }
    </View>
  );
 }
