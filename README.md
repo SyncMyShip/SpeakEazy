@@ -17,5 +17,7 @@ and location data.
 
 ## Running the App
 ```
+npm install
+
 npx expo start 
 ```
