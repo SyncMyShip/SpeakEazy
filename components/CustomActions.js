@@ -55,7 +55,15 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
         const blob = await response.blob();
         uploadBytes(newUploadRef, blob).then(async (snapshot) => {
           const imageURL = await getDownloadURL(snapshot.ref)
-          onSend({ image: imageURL })
+          onSend([{
+            _id: Date.now(),
+            createdAt: new Date(),
+            text: "",
+            user: {
+            _id: userID, // Replace with your user ID
+            },
+            image: imageURL,
+            }])
         });
       }
 
@@ -91,12 +99,18 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
           const location = await Location.getCurrentPositionAsync({});
           
         if (location) {
-            onSend({
+            onSend([{
+                _id: Date.now(),
+                createdAt: new Date(),
+                text: "",
+                user: {
+                    _id: userID, // Replace with the actual user ID
+                },
                 location: {
                     longitude: location.coords.longitude,
                     latitude: location.coords.latitude,
                 },
-            });
+                }]);
           } else Alert.alert("Unable to fetch location")
         } else Alert.alert("Permissions to read location have not been granted");
     }
